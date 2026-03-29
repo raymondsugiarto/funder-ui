@@ -3,6 +3,7 @@
 
 import { defineConfig } from '#q-app/wrappers';
 import { fileURLToPath } from 'node:url';
+import path from 'path';
 
 export default defineConfig((ctx) => {
   return {
@@ -62,6 +63,10 @@ export default defineConfig((ctx) => {
 
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
+      alias: {
+        '@': path.join(__dirname, './src'),
+        '@global': path.join(__dirname, './src/components/~global'),
+      },
 
       vitePlugins: [
         [
@@ -95,6 +100,19 @@ export default defineConfig((ctx) => {
     devServer: {
       // https: true,
       open: true, // opens browser window automatically
+      proxy: {
+        '/api/': {
+          target: process.env.API_URL || 'http://localhost:3000',
+          rewrite: (path) => path.replace(/^\/api/, '/api'),
+          configure: (proxy) => {
+            // proxy will be an instance of 'http-proxy'
+            proxy.on('proxyReq', function (proxyReq) {
+              proxyReq.setHeader('x-origin', 'localhost:9000');
+              proxyReq.setHeader('x-origin-type', 'admin');
+            });
+          },
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
@@ -112,7 +130,7 @@ export default defineConfig((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
     },
 
     // animations: 'all', // --- includes all animations

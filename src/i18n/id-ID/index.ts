@@ -7,4 +7,6 @@ export default {
   username: 'Username / Phone Number',
   password: 'Kata Sandi',
   signIn: 'Masuk',
+  usernamePasswordInvalid: 'Username / Phone Number atau Kata Sandi salah',
+  required: 'Kolom ini wajib diisi',
 };

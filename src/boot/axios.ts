@@ -1,7 +1,10 @@
-import { defineBoot } from '#q-app/wrappers';
-import axios, { type AxiosInstance } from 'axios';
+import { useAppStore } from '@/stores/app/app-store';
+import { useAuthStore } from '@/stores/authentication/auth-store';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
+import { boot } from 'quasar/wrappers';
 
-declare module 'vue' {
+declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
     $api: AxiosInstance;
@@ -14,9 +17,35 @@ declare module 'vue' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' });
+const api = axios.create();
 
-export default defineBoot(({ app }) => {
+export default boot(({ app, router, store }) => {
+  const authStore = useAuthStore(store);
+  const { getDefaultRoute } = useAppStore(store);
+
+  api.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${authStore.getTokenFromCookie()}`;
+    return config;
+  });
+
+  api.interceptors.response.use(
+    (response) => {
+      return response.data;
+    },
+    async (error) => {
+      if (error.code === 'ERR_NETWORK') {
+        // error network
+      } else if (error.response.status === 401) {
+        authStore.removeToken();
+        // need check if from sign in / public page
+        if (!error.response.config.url.startsWith('/api/auth')) {
+          await router.push(getDefaultRoute);
+        }
+      }
+      return Promise.reject(error instanceof Error ? error : new Error(String(error)));
+    },
+  );
+
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
