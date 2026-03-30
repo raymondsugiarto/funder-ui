@@ -13,7 +13,7 @@ export default defineConfig((ctx) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n', 'axios'],
+    boot: ['i18n', 'axios', 'q-component-options'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss', 'tailwind.css'],
@@ -101,12 +101,13 @@ export default defineConfig((ctx) => {
       // https: true,
       open: true, // opens browser window automatically
       proxy: {
-        '/api/': {
+        '/api': {
           target: process.env.API_URL || 'http://localhost:3000',
           rewrite: (path) => path.replace(/^\/api/, '/api'),
           configure: (proxy) => {
             // proxy will be an instance of 'http-proxy'
             proxy.on('proxyReq', function (proxyReq) {
+              console.log('Proxy configured for /api/', proxyReq.path);
               proxyReq.setHeader('x-origin', 'localhost:9000');
               proxyReq.setHeader('x-origin-type', 'admin');
             });

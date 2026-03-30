@@ -1,15 +1,18 @@
-import {
+import type {
   ComponentConstructor,
-  QInput,
+  QCardProps,
   QInputProps,
-  QSelect,
   QSelectProps,
-  QTable,
   QTableProps,
 } from 'quasar';
+import { QCard, QInput, QSelect, QTable } from 'quasar';
 import { boot } from 'quasar/wrappers';
 
 export default boot(() => {
+  SetComponentDefaults<QCardProps>(QCard, {
+    flat: true,
+    bordered: true,
+  });
   SetComponentDefaults<QInputProps>(QInput, {
     outlined: true,
     dense: true,
@@ -30,13 +33,11 @@ export default boot(() => {
  */
 const SetComponentDefaults = <T>(
   component: ComponentConstructor<T>,
-  defaults: Partial<T>
+  defaults: Partial<T>,
 ): void => {
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
   Object.keys(defaults).forEach((prop: string) => {
     component.props[prop] =
-      Array.isArray(component.props[prop]) === true ||
-      typeof component.props[prop] === 'function'
+      Array.isArray(component.props[prop]) === true || typeof component.props[prop] === 'function'
         ? {
             type: component.props[prop],
             default: (defaults as Record<string, unknown>)[prop],
@@ -46,5 +47,4 @@ const SetComponentDefaults = <T>(
             default: (defaults as Record<string, unknown>)[prop],
           };
   });
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 };

@@ -2,6 +2,7 @@ export interface FunderDto {
   id: string;
   name: string;
   phoneNumber: string;
+  password: string;
   funderIdParent?: string;
 }
 
