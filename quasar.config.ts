@@ -102,14 +102,16 @@ export default defineConfig((ctx) => {
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
-          target: process.env.API_URL || 'http://localhost:3000',
+          target: process.env.API_URL || 'http://127.0.0.1:4011',
           rewrite: (path) => path.replace(/^\/api/, '/api'),
           configure: (proxy) => {
+            console.log('Proxy configured', process.env.API_URL || 'http://localhost:3000');
             // proxy will be an instance of 'http-proxy'
             proxy.on('proxyReq', function (proxyReq) {
-              console.log('Proxy configured for /api/', proxyReq.path);
               proxyReq.setHeader('x-origin', 'localhost:9000');
               proxyReq.setHeader('x-origin-type', 'admin');
+              console.log('Proxy configured for /api/', proxyReq.path);
+              console.log('Proxy configured for /api/', proxyReq.getHeader('x-origin'));
             });
           },
         },
