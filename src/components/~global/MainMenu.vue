@@ -1,5 +1,5 @@
 <template>
-  <q-list>
+  <q-list class="tw-text-[#697a8d]">
     <MainMenuItem :menus="getMenus"></MainMenuItem>
   </q-list>
 </template>

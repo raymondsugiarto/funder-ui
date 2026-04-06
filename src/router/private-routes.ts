@@ -19,6 +19,18 @@ const privateRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/FunderPage.vue'),
         meta: { ...adminPrivateMeta },
       },
+      {
+        name: 'contract',
+        path: 'contract',
+        component: () => import('@/pages/ContractPage.vue'),
+        meta: { ...adminPrivateMeta },
+      },
+      {
+        name: 'payment',
+        path: 'payment',
+        component: () => import('@/pages/PaymentPage.vue'),
+        meta: { ...adminPrivateMeta },
+      },
     ],
   },
 ];

@@ -17,6 +17,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
+const filter = ref('');
+
 interface TableProps extends QTableProps {
   stickyHeaderOffset?: number;
 }

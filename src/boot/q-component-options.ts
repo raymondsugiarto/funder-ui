@@ -1,14 +1,18 @@
 import type {
   ComponentConstructor,
   QCardProps,
+  QFileProps,
   QInputProps,
   QSelectProps,
   QTableProps,
 } from 'quasar';
-import { QCard, QInput, QSelect, QTable } from 'quasar';
+import { QCard, QFile, QInput, QSelect, QTable } from 'quasar';
 import { boot } from 'quasar/wrappers';
 
 export default boot(() => {
+  SetComponentDefaults<QFileProps>(QFile, {
+    dense: true,
+  });
   SetComponentDefaults<QCardProps>(QCard, {
     flat: true,
     bordered: true,
@@ -23,7 +27,6 @@ export default boot(() => {
   });
   SetComponentDefaults<QTableProps>(QTable, {
     bordered: true,
-    dense: true,
     flat: true,
   });
 });

@@ -1,10 +1,12 @@
 import type { ContractFormDto } from './types/contract';
 
 export const contractFormDto: ContractFormDto = {
-  searchDate: new Date(),
-  nominal: null,
-  tenor: null,
-  returnPercentPerMonth: null,
+  contractCode: '',
+  funderId: '',
+  disbursementAt: new Date(),
+  amount: 0,
+  duration: 0,
+  returnPercentage: 0,
   attachFile: null,
-  description: '',
+  notes: '',
 };

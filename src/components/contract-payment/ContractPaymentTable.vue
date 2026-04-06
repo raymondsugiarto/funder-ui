@@ -34,7 +34,6 @@ import ButtonEditDelete from '@global/action/ButtonEditDelete.vue';
 import { date, QTable, QTableColumn, QTableProps, useQuasar } from 'quasar';
 import { usePagination } from 'src/composables/pagination/pagination';
 import { api } from 'src/boot/axios';
-import { ContractResponse } from './types/contract';
 import {
   PageTableDto,
   QTablePropsOnRequest,
@@ -42,11 +41,12 @@ import {
 } from 'src/types/pagination/pagination';
 import { DefaultResponse } from 'src/types/response';
 import { useDate } from 'src/composables/date';
+import { ContractPaymentResponse } from './types/contract-payment';
 
 const $q = useQuasar();
 const { DISPLAY_DATE_FORMAT } = useDate();
 const { paginationRequest } = usePagination(api);
-const rows = ref([] as ContractResponse[]);
+const rows = ref([] as ContractPaymentResponse[]);
 const tableRef = ref() as Ref<QTable>;
 const loading = ref(false);
 const confirm = ref(false);
@@ -63,45 +63,17 @@ const columns: QTableColumn[] = [
     sortable: false,
   },
   {
-    name: 'contractNumber',
-    label: 'No Urut Perjanjian',
+    name: 'paymentAt',
+    label: 'Tanggal Pembayaran',
     align: 'left',
-    field: 'contractNumber',
+    field: (row) => date.formatDate(row.paymentAt, DISPLAY_DATE_FORMAT),
     sortable: false,
   },
   {
-    name: 'contractCode',
-    label: 'Nomor Perjanjian',
-    align: 'left',
-    field: 'contractCode',
-    sortable: false,
-  },
-  {
-    name: 'disbursementAt',
-    label: 'Tanggal Pencarian',
-    align: 'left',
-    field: (row) => date.formatDate(row.disbursementAt, DISPLAY_DATE_FORMAT),
-    sortable: false,
-  },
-  {
-    name: 'amount',
+    name: 'paymentAmount',
     label: 'Nominal',
     align: 'right',
-    field: 'amount',
-    sortable: false,
-  },
-  {
-    name: 'duration',
-    label: 'Tenor (bulan)',
-    align: 'right',
-    field: 'duration',
-    sortable: false,
-  },
-  {
-    name: 'returnPercentage',
-    label: 'Return % per Bulan',
-    align: 'right',
-    field: 'returnPercentage',
+    field: 'paymentAmount',
     sortable: false,
   },
   // {
@@ -138,14 +110,18 @@ const onRequest: QTableProps['onRequest'] = async (tableProps) => {
   }
   tablePropsRequest.params = searchParams;
 
-  await paginationRequest<ContractResponse>('/api/contracts', tablePropsRequest, pagination)
-    .then((response: DefaultResponse<PageTableDto<ContractResponse>>) => {
+  await paginationRequest<ContractPaymentResponse>(
+    '/api/contract-payments',
+    tablePropsRequest,
+    pagination,
+  )
+    .then((response: DefaultResponse<PageTableDto<ContractPaymentResponse>>) => {
       rows.value = response.data.contents;
     })
     .catch(() => {
       $q.notify({
         color: 'negative',
-        message: 'Gagal memuat data kontrak',
+        message: 'Gagal memuat data pembayaran',
       });
     });
   loading.value = false;

@@ -1,13 +1,18 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="q-my-md text-h6">Funder</div>
-    <q-card>
-      <q-card-section>
-        <FunderForm v-model="form"></FunderForm>
-      </q-card-section>
-    </q-card>
-    <q-card>
-      <FunderTable></FunderTable>
+    <q-toolbar class="q-pa-none">
+      <q-toolbar-title> Funder </q-toolbar-title>
+      <q-btn label="Buat Funder" color="primary" @click="showForm = true"></q-btn>
+    </q-toolbar>
+    <q-slide-transition>
+      <q-card class="q-mb-md tw-rounded-lg" v-if="showForm">
+        <q-card-section>
+          <FunderForm @cancel="handleCancel" @success="handleSuccess" v-model="form"></FunderForm>
+        </q-card-section>
+      </q-card>
+    </q-slide-transition>
+    <q-card class="q-mb-md tw-rounded-lg">
+      <FunderTable ref="tableRef"></FunderTable>
     </q-card>
   </q-page>
 </template>
@@ -16,8 +21,16 @@
 import { funderDto } from 'src/components/funder/funder';
 import FunderForm from 'src/components/funder/FunderForm.vue';
 import FunderTable from 'src/components/funder/FunderTable.vue';
-import { FunderDto } from 'src/components/funder/types/funder';
+import { FunderDto, FunderResponse } from 'src/components/funder/types/funder';
 import { ref } from 'vue';
 
 const form = ref<FunderDto>({ ...funderDto });
+const tableRef = ref<typeof FunderTable>();
+const showForm = ref(false);
+const handleSuccess = (data: FunderResponse) => {
+  tableRef.value?.refresh();
+};
+const handleCancel = () => {
+  showForm.value = false;
+};
 </script>

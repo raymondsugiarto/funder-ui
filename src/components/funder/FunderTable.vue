@@ -1,8 +1,5 @@
 <template>
   <my-table
-    flat
-    bordered
-    dense
     ref="tableRef"
     :rows="rows"
     :columns="columns"
@@ -14,13 +11,6 @@
     :filter="filter"
     @request="onRequest"
   >
-    <template v-slot:top-right>
-      <q-input debounce="300" v-model="filter" placeholder="Cari">
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-    </template>
     <template v-slot:body-cell-id="props">
       <q-td key="id" :props="props" auto-width>
         <ButtonEditDelete
@@ -78,45 +68,10 @@ const columns: QTableColumn[] = [
     sortable: false,
   },
   {
-    name: 'address',
-    label: 'Alamat',
-    align: 'left',
-    field: 'address',
-    sortable: false,
-  },
-  {
-    name: 'identityNumber',
-    label: 'No. KTP',
-    align: 'left',
-    field: 'identityNumber',
-    sortable: false,
-  },
-  {
     name: 'phoneNumber',
-    label: 'No Handphone',
+    label: 'No Whatsapp',
     align: 'left',
     field: 'phoneNumber',
-    sortable: false,
-  },
-  {
-    name: 'passportNumber',
-    label: 'No. Paspor',
-    align: 'left',
-    field: 'passportNumber',
-    sortable: false,
-  },
-  {
-    name: 'studentCardNumber',
-    label: 'No Kartu Pelajar',
-    align: 'left',
-    field: 'studentCardNumber',
-    sortable: false,
-  },
-  {
-    name: 'drivingLicenseNumber',
-    label: 'No SIM',
-    align: 'left',
-    field: 'drivingLicenseNumber',
     sortable: false,
   },
 ];
@@ -155,5 +110,11 @@ const onRequest: QTableProps['onRequest'] = async (tableProps) => {
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+});
+
+defineExpose({
+  refresh() {
+    tableRef.value.requestServerInteraction();
+  },
 });
 </script>

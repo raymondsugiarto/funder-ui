@@ -1,18 +1,23 @@
 export interface ContractFormDto {
-  searchDate: Date;
-  nominal: number | null;
-  tenor: number | null;
-  returnPercentPerMonth: number | null;
+  contractCode: string;
+  funderId: string;
+  disbursementAt: Date;
+  amount: number | null;
+  duration: number | null;
+  returnPercentage: number | null;
   attachFile: File | null;
-  description: string;
+  notes: string;
 }
-
 export interface ContractResponse {
   id: string;
-  searchDate: string;
-  nominal: number;
-  tenor: number;
-  returnPercentPerMonth: number;
+  contractNumber: string;
+  contractCode: string;
+  funderId: string;
+  disbursementAt: string;
+  amount: number;
+  duration: number;
+  returnPercentage: number;
+  returnAmount: number;
   attachFile: string;
-  description: string;
+  notes: string;
 }
