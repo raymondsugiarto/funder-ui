@@ -142,6 +142,7 @@ const handleUpdateFunder = (row: QSelectValue<FunderResponse> | undefined) => {
 
 const handleSubmit = () => {
   const f = new FormData();
+  f.append('contractId', model.value.contractId);
   f.append('paymentAt', model.value.paymentAt.toISOString());
   f.append('paymentAmount', model.value.paymentAmount?.toString() ?? '');
   f.append('notes', model.value.notes);

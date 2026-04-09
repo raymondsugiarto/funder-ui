@@ -53,16 +53,16 @@ const menus: MenuItem[] = [
     to: '/payment',
   },
   {
-    id: 'report-aging',
+    id: 'contract-aging',
     label: 'Laporan Jatuh Tempo',
     icon: 'shopping_bag',
-    to: '/report-aging',
+    to: '/contract-aging',
   },
   {
-    id: 'report-payment',
+    id: 'payment-paid',
     label: 'Laporan Pembayaran Funder',
     icon: 'shelves',
-    to: '/report-payment',
+    to: '/payment-paid',
   },
   {
     id: 'history-funder',

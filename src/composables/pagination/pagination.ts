@@ -1,12 +1,13 @@
-import { QTableProps } from 'quasar';
-import { ref, Ref } from 'vue';
-import { AxiosInstance } from 'axios';
-import {
+import type { QTableProps } from 'quasar';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
+import type { AxiosInstance } from 'axios';
+import type {
   PageTableDto,
   QTablePropsOnRequest,
   QTablePropsOnRequestPagination,
 } from '@/types/pagination/pagination';
-import { DefaultResponse } from '@/types/response';
+import type { DefaultResponse } from '@/types/response';
 
 export class PageRequestDto {
   page: number | undefined = 1;
@@ -17,7 +18,7 @@ export const usePagination = (api: AxiosInstance) => {
   const paginationRequest = async <T>(
     endpoint: string,
     props: QTablePropsOnRequest,
-    pagination: Ref<NonNullable<QTableProps['pagination']>>
+    pagination: Ref<NonNullable<QTableProps['pagination']>>,
   ): Promise<DefaultResponse<PageTableDto<T>>> => {
     const { page, rowsPerPage, sortBy, descending } = props.pagination;
     const searchParams = new URLSearchParams();
@@ -34,9 +35,7 @@ export const usePagination = (api: AxiosInstance) => {
       });
     }
     return api
-      .get<DefaultResponse<PageTableDto<T>>>(
-        endpoint + '?' + searchParams.toString()
-      )
+      .get<DefaultResponse<PageTableDto<T>>>(endpoint + '?' + searchParams.toString())
       .then((response: DefaultResponse<PageTableDto<T>>) => {
         if (response) {
           const { data } = response;
@@ -53,14 +52,13 @@ export const usePagination = (api: AxiosInstance) => {
       });
   };
 
-  const paginationDefault: Ref<NonNullable<QTablePropsOnRequestPagination>> =
-    ref({
-      sortBy: 'created_at',
-      descending: true,
-      page: 0,
-      rowsPerPage: 20,
-      rowsNumber: 0,
-    });
+  const paginationDefault: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
+    sortBy: 'created_at',
+    descending: true,
+    page: 0,
+    rowsPerPage: 20,
+    rowsNumber: 0,
+  });
 
   return { paginationRequest, paginationDefault };
 };

@@ -31,6 +31,24 @@ const privateRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/PaymentPage.vue'),
         meta: { ...adminPrivateMeta },
       },
+      {
+        name: 'contract-aging',
+        path: 'contract-aging',
+        component: () => import('@/pages/ContractAgingReport.vue'),
+        meta: { ...adminPrivateMeta },
+      },
+      {
+        name: 'payment-paid',
+        path: 'payment-paid',
+        component: () => import('@/pages/PaymentPaidReport.vue'),
+        meta: { ...adminPrivateMeta },
+      },
+      {
+        name: 'history-funder',
+        path: 'history-funder',
+        component: () => import('@/pages/HistoryFunderReport.vue'),
+        meta: { ...adminPrivateMeta },
+      },
     ],
   },
 ];
