@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:22-alpine As development
+FROM node:22-alpine AS development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -13,11 +13,14 @@ RUN corepack enable
 # Copy dependency manifests first for better Docker layer caching
 COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install dependencies locked by pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile
+# Install dependencies without running lifecycle scripts yet
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Bundle app source
 COPY --chown=node:node . .
+
+# Run lifecycle scripts after full project files are present
+RUN pnpm install --frozen-lockfile
 
 # Use the node user from the image (instead of the root user)
 USER node
@@ -26,7 +29,7 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:22-alpine As build
+FROM node:22-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -43,7 +46,7 @@ COPY --chown=node:node . .
 RUN pnpm build
 
 # Set NODE_ENV environment variable
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Remove devDependencies from node_modules for runtime image
 RUN pnpm prune --prod
@@ -54,7 +57,9 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:22-alpine As production
+FROM node:22-alpine AS production
+
+WORKDIR /usr/src/app
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
