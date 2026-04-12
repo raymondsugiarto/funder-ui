@@ -42,17 +42,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref } from 'vue';
-import { date, QTable, useQuasar } from 'quasar';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
+import type { QTable } from 'quasar';
+import { date, useQuasar } from 'quasar';
 import { usePagination } from 'src/composables/pagination/pagination';
 import { api } from 'src/boot/axios';
-import {
+import type {
   PageTableDto,
   QTablePropsOnRequest,
   QTablePropsOnRequestPagination,
 } from 'src/types/pagination/pagination';
-import { DefaultResponse } from 'src/types/response';
-import { HistoryFunderFilter, HistoryFunderResponse } from './types/history-funder';
+import type { DefaultResponse } from 'src/types/response';
+import type { HistoryFunderFilter, HistoryFunderResponse } from './types/history-funder';
 import { useDate } from 'src/composables/date';
 import HistoryFunderContractInfo from './HistoryFunderContractInfo.vue';
 
@@ -65,7 +67,6 @@ const $q = useQuasar();
 const { paginationRequest } = usePagination(api);
 const rows = ref([] as HistoryFunderResponse[]);
 const { DISPLAY_DATE_FORMAT } = useDate();
-const tableRef = ref() as Ref<QTable>;
 const loading = ref(false);
 
 const pagination: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
@@ -82,7 +83,7 @@ const loadData = async () => {
   const searchParams = new URLSearchParams();
   const tablePropsRequest: QTablePropsOnRequest = {
     pagination: pagination.value,
-    getCellValue: (row, col) => true,
+    getCellValue: () => true,
   };
   // loop props.filter and append to searchParams
   for (const key in props.filter) {
@@ -107,8 +108,8 @@ const loadData = async () => {
 };
 
 defineExpose({
-  refresh() {
-    loadData();
+  async refresh() {
+    await loadData();
   },
 });
 </script>

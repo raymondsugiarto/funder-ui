@@ -13,34 +13,38 @@
   >
     <template v-slot:body-cell-id="props">
       <q-td key="id" :props="props" auto-width>
-        <ButtonEditDelete
-          :props="props"
-          :targetEdit="`/customer/${props.row.id}`"
-          @delete="
-            deleteItem = props.row.name;
-            deleteItemId = props.row.id;
-            confirm = true;
-          "
-        >
+        <ButtonEditDelete :row="props.row" @edit="handleEdit" @delete="handleDelete">
         </ButtonEditDelete>
       </q-td>
     </template>
   </my-table>
+  <DeleteConfirmationDialog
+    v-model="confirm"
+    :deleteItem="selectedItem?.name ?? ''"
+    :api-url="`/api/funders/${selectedItem?.id}`"
+    success-message="Funder berhasil dihapus"
+    error-message="Gagal menghapus funder"
+    @deleteSuccess="tableRef.requestServerInteraction()"
+  />
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, Ref } from 'vue';
+import type { Ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import MyTable from '@global/MyTable.vue';
-import { QTable, QTableColumn, QTableProps, useQuasar } from 'quasar';
+import type { QTable, QTableColumn, QTableProps } from 'quasar';
+import { useQuasar } from 'quasar';
 import { usePagination } from 'src/composables/pagination/pagination';
 import { api } from 'src/boot/axios';
-import { FunderResponse } from './types/funder';
-import {
+import type { FunderResponse } from './types/funder';
+import type {
   PageTableDto,
   QTablePropsOnRequest,
   QTablePropsOnRequestPagination,
 } from 'src/types/pagination/pagination';
-import { DefaultResponse } from 'src/types/response';
+import type { DefaultResponse } from 'src/types/response';
+import ButtonEditDelete from '../~global/action/ButtonEditDelete.vue';
+import DeleteConfirmationDialog from '../~global/dialog/DeleteConfirmationDialog.vue';
 
 const $q = useQuasar();
 const { paginationRequest } = usePagination(api);
@@ -48,9 +52,13 @@ const rows = ref([] as FunderResponse[]);
 const tableRef = ref() as Ref<QTable>;
 const loading = ref(false);
 const confirm = ref(false);
-const deleteItem = ref('');
-const deleteItemId = ref('');
+const selectedItem = ref<FunderResponse>();
 const filter = ref('');
+
+interface Emit {
+  (event: 'edit', row: FunderResponse): void;
+}
+const emit = defineEmits<Emit>();
 
 const columns: QTableColumn[] = [
   {
@@ -58,6 +66,13 @@ const columns: QTableColumn[] = [
     label: '#',
     align: 'left',
     field: 'id',
+    sortable: false,
+  },
+  {
+    name: 'funderParent',
+    label: 'Leader',
+    align: 'left',
+    field: (row) => row.funderParent?.name || '-',
     sortable: false,
   },
   {
@@ -84,7 +99,17 @@ const pagination: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
   rowsNumber: 0,
 });
 
-const onRequest: QTableProps['onRequest'] = async (tableProps) => {
+const handleEdit = (row: FunderResponse) => {
+  selectedItem.value = row;
+  emit('edit', row);
+};
+
+const handleDelete = (row: FunderResponse) => {
+  selectedItem.value = row;
+  confirm.value = true;
+};
+
+const onRequest: QTableProps['onRequest'] = (tableProps) => {
   loading.value = true;
 
   const searchParams = new URLSearchParams();
@@ -94,7 +119,7 @@ const onRequest: QTableProps['onRequest'] = async (tableProps) => {
   }
   tablePropsRequest.params = searchParams;
 
-  await paginationRequest<FunderResponse>('/api/funders', tablePropsRequest, pagination)
+  paginationRequest<FunderResponse>('/api/funders', tablePropsRequest, pagination)
     .then((response: DefaultResponse<PageTableDto<FunderResponse>>) => {
       rows.value = response.data.contents;
     })
@@ -103,8 +128,10 @@ const onRequest: QTableProps['onRequest'] = async (tableProps) => {
         color: 'negative',
         message: 'Gagal memuat data',
       });
+    })
+    .finally(() => {
+      loading.value = false;
     });
-  loading.value = false;
 };
 
 onMounted(() => {

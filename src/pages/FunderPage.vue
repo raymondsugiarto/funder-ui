@@ -12,7 +12,7 @@
       </q-card>
     </q-slide-transition>
     <q-card class="q-mb-md tw-rounded-lg">
-      <FunderTable ref="tableRef"></FunderTable>
+      <FunderTable ref="tableRef" @edit="handleEdit"></FunderTable>
     </q-card>
   </q-page>
 </template>
@@ -32,5 +32,10 @@ const handleSuccess = (data: FunderResponse) => {
 };
 const handleCancel = () => {
   showForm.value = false;
+};
+
+const handleEdit = (row: FunderResponse) => {
+  form.value = { ...row, password: '' };
+  showForm.value = true;
 };
 </script>

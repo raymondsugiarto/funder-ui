@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit="handleSubmit">
+  <q-form ref="formRef" @submit="handleSubmit">
     <div class="row q-col-gutter-md">
       <div class="col-12 col-md-6">
         <q-input
@@ -11,6 +11,7 @@
         ></q-input>
         <SelectFunder
           v-model="funderIdParent"
+          label="Pilih Leader"
           @update:model-value="(row) => (model.funderIdParent = row?.value ?? '')"
           class="q-mb-md"
         ></SelectFunder>
@@ -39,11 +40,11 @@
 
 <script lang="ts" setup>
 import { api } from 'src/boot/axios';
-import { FunderDto, FunderResponse } from './types/funder';
-import { DefaultResponse } from '@/types/response';
+import type { FunderDto, FunderResponse } from './types/funder';
+import type { DefaultResponse } from '@/types/response';
 import SelectFunder from './SelectFunder.vue';
 import { ref } from 'vue';
-import { useQuasar } from 'quasar';
+import { QForm, useQuasar } from 'quasar';
 
 const model = defineModel<FunderDto>({
   required: true,
@@ -51,11 +52,26 @@ const model = defineModel<FunderDto>({
 
 const funderIdParent = ref();
 const $q = useQuasar();
-const emit = defineEmits({
-  success: (data: FunderResponse) => true,
-  error: (error: Error) => true,
-  cancel: () => true,
-});
+const formRef = ref<QForm>();
+
+interface Emit {
+  (event: 'success', data: FunderResponse): void;
+  (event: 'error', error: Error): void;
+  (event: 'cancel'): void;
+}
+const emit = defineEmits<Emit>();
+
+const onReset = () => {
+  formRef.value?.resetValidation();
+  model.value = {
+    id: '',
+    name: '',
+    phoneNumber: '',
+    password: '',
+    funderIdParent: '',
+  };
+  funderIdParent.value = null;
+};
 
 const handleSubmit = () => {
   api
@@ -66,6 +82,7 @@ const handleSubmit = () => {
         message: 'Funder berhasil disimpan',
       });
       emit('success', response.data);
+      onReset();
     })
     .catch((error) => {
       $q.notify({

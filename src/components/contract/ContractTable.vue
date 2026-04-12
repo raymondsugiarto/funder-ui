@@ -14,7 +14,7 @@
     <template v-slot:body-cell-id="props">
       <q-td key="id" :props="props" auto-width>
         <ButtonEditDelete
-          :props="props"
+          :row="props"
           :targetEdit="`/contract/${props.row.id}`"
           @delete="
             deleteItem = props.row.id;
@@ -28,19 +28,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, Ref } from 'vue';
+import type { Ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import MyTable from '@global/MyTable.vue';
 import ButtonEditDelete from '@global/action/ButtonEditDelete.vue';
-import { date, QTable, QTableColumn, QTableProps, useQuasar } from 'quasar';
+import type { QTable, QTableColumn, QTableProps } from 'quasar';
+import { date, useQuasar } from 'quasar';
 import { usePagination } from 'src/composables/pagination/pagination';
 import { api } from 'src/boot/axios';
-import { ContractResponse } from './types/contract';
-import {
+import type { ContractResponse } from './types/contract';
+import type {
   PageTableDto,
   QTablePropsOnRequest,
   QTablePropsOnRequestPagination,
 } from 'src/types/pagination/pagination';
-import { DefaultResponse } from 'src/types/response';
+import type { DefaultResponse } from 'src/types/response';
 import { useDate } from 'src/composables/date';
 
 const $q = useQuasar();
@@ -142,7 +144,7 @@ const pagination: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
   rowsNumber: 0,
 });
 
-const onRequest: QTableProps['onRequest'] = async (tableProps) => {
+const onRequest: QTableProps['onRequest'] = (tableProps) => {
   loading.value = true;
 
   const searchParams = new URLSearchParams();
@@ -152,7 +154,7 @@ const onRequest: QTableProps['onRequest'] = async (tableProps) => {
   }
   tablePropsRequest.params = searchParams;
 
-  await paginationRequest<ContractResponse>('/api/contracts', tablePropsRequest, pagination)
+  paginationRequest<ContractResponse>('/api/contracts', tablePropsRequest, pagination)
     .then((response: DefaultResponse<PageTableDto<ContractResponse>>) => {
       rows.value = response.data.contents;
     })
@@ -161,8 +163,10 @@ const onRequest: QTableProps['onRequest'] = async (tableProps) => {
         color: 'negative',
         message: 'Gagal memuat data kontrak',
       });
+    })
+    .finally(() => {
+      loading.value = false;
     });
-  loading.value = false;
 };
 
 onMounted(() => {

@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
   <div>
     <q-btn
@@ -8,7 +9,7 @@
       icon="edit"
       aria-label="Edit"
       color="warning"
-      :to="targetEdit"
+      @click="onEdit"
     />
     <q-btn
       flat
@@ -26,7 +27,7 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-  props: {
+  row: {
     type: Object,
     required: true,
   },
@@ -36,9 +37,19 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['delete']);
+interface Emit {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (event: 'delete', row: any): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (event: 'edit', row: any): void;
+}
+const emit = defineEmits<Emit>();
 
 const onDeleted = () => {
-  emit('delete', props);
+  emit('delete', props.row);
+};
+
+const onEdit = () => {
+  emit('edit', props.row);
 };
 </script>

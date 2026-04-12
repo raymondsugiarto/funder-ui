@@ -11,4 +11,5 @@ export interface FunderResponse {
   name: string;
   phoneNumber: string;
   funderIdParent?: string;
+  funderParent?: FunderResponse;
 }

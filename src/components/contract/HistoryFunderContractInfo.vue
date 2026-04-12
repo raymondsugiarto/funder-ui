@@ -3,32 +3,32 @@
     class="tw-border tw-border-collapse q-pa-md vertical-top"
     :rowspan="row.contractPayments?.length"
   >
-    {{ row.contractNumber }}
+    {{ props.row.contractNumber }}
   </td>
   <td
     class="tw-border tw-border-collapse q-pa-md vertical-top"
-    :rowspan="row.contractPayments?.length"
+    :rowspan="props.row.contractPayments?.length"
   >
-    {{ date.formatDate(row.createdAt, DISPLAY_DATE_FORMAT) }} <br />
-    {{ row.notes }}
+    {{ date.formatDate(props.row.createdAt, DISPLAY_DATE_FORMAT) }} <br />
+    {{ props.row.notes }}
   </td>
   <td
     class="tw-border tw-border-collapse q-pa-md vertical-top text-right"
-    :rowspan="row.contractPayments?.length"
+    :rowspan="props.row.contractPayments?.length"
   >
-    Rp {{ row.amount }}
+    Rp {{ props.row.amount }}
   </td>
   <td
     class="tw-border tw-border-collapse q-pa-md vertical-top text-right"
-    :rowspan="row.contractPayments?.length"
+    :rowspan="props.row.contractPayments?.length"
   >
-    Rp {{ row.returnAmount }}
+    Rp {{ props.row.returnAmount }}
   </td>
 </template>
 
 <script lang="ts" setup>
 import { useDate } from 'src/composables/date';
-import { HistoryFunderResponse } from './types/history-funder';
+import type { HistoryFunderResponse } from './types/history-funder';
 import { date } from 'quasar';
 
 interface Props {

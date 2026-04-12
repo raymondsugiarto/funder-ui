@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts" setup>
-import { QSelectValue } from '@/types/components/tselect';
+import type { QSelectValue } from '@/types/components/tselect';
 import { api } from '@/boot/axios';
 import TSelect from '@/components/~global/select/TSelect.vue';
 import { useAppStore } from '@/stores/app/app-store';
-import { FunderResponse } from './types/funder';
+import type { FunderResponse } from './types/funder';
 
 const model = defineModel<QSelectValue<FunderResponse>>();
 const { getPrefixApiUrl } = useAppStore();

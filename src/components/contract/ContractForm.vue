@@ -99,13 +99,13 @@
 
 <script lang="ts" setup>
 import DatePicker from '@global/DatePicker.vue';
-import { ContractFormDto, ContractResponse } from './types/contract';
+import type { ContractFormDto, ContractResponse } from './types/contract';
 import SelectFunder from '../funder/SelectFunder.vue';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { QSelectValue } from 'src/types/components/tselect';
-import { FunderDto } from '../funder/types/funder';
-import { DefaultResponse } from 'src/types/response';
+import type { QSelectValue } from 'src/types/components/tselect';
+import type { FunderDto } from '../funder/types/funder';
+import type { DefaultResponse } from 'src/types/response';
 import { api } from 'src/boot/axios';
 
 const model = defineModel<ContractFormDto>({

@@ -2,7 +2,7 @@
   <q-dialog v-model="confirm" persistent>
     <q-card>
       <q-card-section class="row items-center">
-        <span class="q-ml-sm">Apakah yakin menghapus data {{ deleteItem }}?</span>
+        <span class="">Apakah yakin menghapus data {{ deleteItem }}?</span>
       </q-card-section>
       <q-card-actions align="right">
         <q-btn flat label="Ya" color="primary" @click="handleClickDelete" />
