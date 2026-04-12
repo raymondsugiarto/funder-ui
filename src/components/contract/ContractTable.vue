@@ -98,6 +98,13 @@ const columns: QTableColumn[] = [
     sortable: false,
   },
   {
+    name: 'dueDate',
+    label: 'Tanggal Jatuh Tempo',
+    align: 'right',
+    field: (row) => date.formatDate(row.dueDate, DISPLAY_DATE_FORMAT),
+    sortable: false,
+  },
+  {
     name: 'returnPercentage',
     label: 'Return % per Bulan',
     align: 'right',
@@ -111,6 +118,13 @@ const columns: QTableColumn[] = [
   //   field: 'attachFile', // TODO: file
   //   sortable: false,
   // },
+  {
+    name: 'destinationAccount',
+    label: 'Rekening Tujuan',
+    align: 'left',
+    field: 'destinationAccount',
+    sortable: false,
+  },
   {
     name: 'notes',
     label: 'Keterangan',

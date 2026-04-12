@@ -15,6 +15,7 @@ export interface HistoryFunderResponse {
   returnAmount: number;
   attachFile: string;
   notes: string;
+  createdAt: Date;
   contractPayments?: HistoryFunderPaymentResponse[];
 }
 

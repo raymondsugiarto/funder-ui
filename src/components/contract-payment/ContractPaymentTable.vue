@@ -63,6 +63,20 @@ const columns: QTableColumn[] = [
     sortable: false,
   },
   {
+    name: 'contractNumber',
+    label: 'No Urut Perjanjian',
+    align: 'left',
+    field: (row) => row.contract?.contractNumber,
+    sortable: false,
+  },
+  {
+    name: 'contractCode',
+    label: 'Nomor Perjanjian',
+    align: 'left',
+    field: (row) => row.contract?.contractCode,
+    sortable: false,
+  },
+  {
     name: 'paymentAt',
     label: 'Tanggal Pembayaran',
     align: 'left',
@@ -71,7 +85,7 @@ const columns: QTableColumn[] = [
   },
   {
     name: 'paymentAmount',
-    label: 'Nominal',
+    label: 'Nominal Pembayaran',
     align: 'right',
     field: 'paymentAmount',
     sortable: false,

@@ -18,20 +18,22 @@
           <HistoryFunderContractInfo :row="row"></HistoryFunderContractInfo>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
           <td class="tw-border tw-border-collapse q-pa-md text-right">
-            {{ row.amount + row.returnAmount }}
+            Rp {{ row.amount + row.returnAmount }}
           </td>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
         </tr>
         <tr class="tw-border tw-border-collapse" v-for="(payment, idx) in row.contractPayments">
           <HistoryFunderContractInfo v-if="idx === 0" :row="row"></HistoryFunderContractInfo>
-          <td class="tw-border tw-border-collapse q-pa-md">{{ `Payment-x` }} bulan</td>
+          <td class="tw-border tw-border-collapse q-pa-md">{{ payment.notes }}</td>
           <td class="tw-border tw-border-collapse q-pa-md text-right">
-            {{ payment.paymentAmount }}
+            Rp {{ payment.paymentAmount }}
           </td>
-          <td class="tw-border tw-border-collapse q-pa-md">{{ row.dueDate }}</td>
           <td class="tw-border tw-border-collapse q-pa-md">
             {{ date.formatDate(row.dueDate, DISPLAY_DATE_FORMAT) }}
+          </td>
+          <td class="tw-border tw-border-collapse q-pa-md">
+            {{ date.formatDate(row.disbursementAt, DISPLAY_DATE_FORMAT) }}
           </td>
         </tr>
       </template>

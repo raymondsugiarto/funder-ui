@@ -16,11 +16,24 @@
           :rules="[(val: QSelectValue<FunderDto>) => !!val || 'Funder wajib dipilih']"
         ></SelectFunder>
 
-        <DatePicker
-          v-model="model.disbursementAt"
-          placeholder="Tanggal Pencarian"
-          :rules="[(val) => !!val || 'Tanggal Pencarian wajib diisi']"
-        />
+        <div class="row q-col-gutter-md">
+          <div class="col">
+            <DatePicker
+              v-model="model.disbursementAt"
+              placeholder="Tanggal Pencarian"
+              :rules="[(val) => !!val || 'Tanggal Pencarian wajib diisi']"
+              label="Tanggal Pencairan"
+            />
+          </div>
+          <div class="col">
+            <DatePicker
+              v-model="model.dueDate"
+              placeholder="Tanggal Jatuh Tempo"
+              :rules="[(val) => !!val || 'Tanggal Jatuh Tempo wajib diisi']"
+              label="Tanggal Jatuh Tempo"
+            />
+          </div>
+        </div>
 
         <q-input label="Keterangan" v-model="model.notes" type="textarea" autogrow lazy-rules />
       </div>
@@ -34,22 +47,36 @@
           :rules="[(val) => !!val || 'Nominal wajib diisi']"
         />
 
-        <q-input
-          label="Tenor (bulan)"
-          v-model="model.duration"
-          type="number"
-          suffix="bulan"
-          lazy-rules
-          :rules="[(val) => !!val || 'Tenor wajib diisi']"
-        />
+        <div class="row q-col-gutter-md">
+          <div class="col">
+            <q-input
+              label="Tenor (bulan)"
+              v-model="model.duration"
+              type="number"
+              suffix="bulan"
+              lazy-rules
+              :rules="[(val) => !!val || 'Tenor wajib diisi']"
+            />
+          </div>
+          <div class="col">
+            <q-input
+              label="Return % per Bulan"
+              v-model="model.returnPercentage"
+              type="number"
+              suffix="%"
+              lazy-rules
+              :rules="[(val) => !!val || 'Return per bulan wajib diisi']"
+            />
+          </div>
+        </div>
 
         <q-input
-          label="Return % per Bulan"
-          v-model="model.returnPercentage"
-          type="number"
-          suffix="%"
+          label="Rekening Tujuan"
+          v-model="model.destinationAccount"
+          type="textarea"
+          autogrow
           lazy-rules
-          :rules="[(val) => !!val || 'Return per bulan wajib diisi']"
+          :rules="[(val) => !!val || 'Rekening tujuan wajib diisi']"
         />
 
         <q-file
@@ -98,6 +125,7 @@ const handleSubmit = () => {
   f.append('contractCode', model.value.contractCode);
   f.append('funderId', model.value.funderId);
   f.append('disbursementAt', model.value.disbursementAt.toISOString());
+  f.append('dueDate', model.value.dueDate.toISOString());
   f.append('amount', model.value.amount?.toString() ?? '');
   f.append('duration', model.value.duration?.toString() ?? '');
   f.append('returnPercentage', model.value.returnPercentage?.toString() ?? '');

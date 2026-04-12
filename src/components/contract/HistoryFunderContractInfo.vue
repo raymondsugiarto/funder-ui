@@ -9,20 +9,20 @@
     class="tw-border tw-border-collapse q-pa-md vertical-top"
     :rowspan="row.contractPayments?.length"
   >
-    {{ date.formatDate(row.disbursementAt, DISPLAY_DATE_FORMAT) }}
+    {{ date.formatDate(row.createdAt, DISPLAY_DATE_FORMAT) }} <br />
     {{ row.notes }}
   </td>
   <td
     class="tw-border tw-border-collapse q-pa-md vertical-top text-right"
     :rowspan="row.contractPayments?.length"
   >
-    {{ row.amount }}
+    Rp {{ row.amount }}
   </td>
   <td
     class="tw-border tw-border-collapse q-pa-md vertical-top text-right"
     :rowspan="row.contractPayments?.length"
   >
-    {{ row.returnAmount }}
+    Rp {{ row.returnAmount }}
   </td>
 </template>
 

@@ -6,6 +6,7 @@
           v-model="funder"
           @update:model-value="handleUpdateFunder"
           lazy-rules
+          :notYetPaidOff="true"
           :rules="[(val: QSelectValue<FunderDto>) => !!val || 'Funder wajib dipilih']"
         ></SelectFunder>
 
@@ -28,8 +29,9 @@
 
         <DatePicker
           v-model="model.paymentAt"
-          placeholder="Tanggal Pencarian"
-          :rules="[(val) => !!val || 'Tanggal Pencarian wajib diisi']"
+          placeholder="Tanggal Pembayaran"
+          label="Tanggal Pembayaran"
+          :rules="[(val) => !!val || 'Tanggal Pembayaran wajib diisi']"
         />
       </div>
       <div class="col-12 col-md-4">

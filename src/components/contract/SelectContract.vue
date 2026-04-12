@@ -21,12 +21,16 @@ const model = defineModel<QSelectValue<ContractResponse>>();
 const { getPrefixApiUrl } = useAppStore();
 const props = defineProps<{
   funderId?: string;
+  notYetPaidOff?: boolean;
 }>();
 
 const urlParams = computed(() => {
   const params: URLSearchParams = new URLSearchParams();
   if (props.funderId) {
     params.append('funderId', props.funderId);
+  }
+  if (props.notYetPaidOff) {
+    params.append('notYetPaidOff', 'true');
   }
   return params;
 });

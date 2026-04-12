@@ -2,6 +2,8 @@ export interface ContractFormDto {
   contractCode: string;
   funderId: string;
   disbursementAt: Date;
+  dueDate: Date;
+  destinationAccount: string;
   amount: number | null;
   duration: number | null;
   returnPercentage: number | null;
@@ -15,6 +17,8 @@ export interface ContractResponse {
   funderId: string;
   disbursementAt: string;
   amount: number;
+  dueDate: Date;
+  destinationAccount: string;
   duration: number;
   returnPercentage: number;
   returnAmount: number;
