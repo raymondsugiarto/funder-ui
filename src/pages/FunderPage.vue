@@ -21,13 +21,13 @@
 import { funderDto } from 'src/components/funder/funder';
 import FunderForm from 'src/components/funder/FunderForm.vue';
 import FunderTable from 'src/components/funder/FunderTable.vue';
-import { FunderDto, FunderResponse } from 'src/components/funder/types/funder';
+import type { FunderDto, FunderResponse } from 'src/components/funder/types/funder';
 import { ref } from 'vue';
 
 const form = ref<FunderDto>({ ...funderDto });
 const tableRef = ref<typeof FunderTable>();
 const showForm = ref(false);
-const handleSuccess = (data: FunderResponse) => {
+const handleSuccess = () => {
   tableRef.value?.refresh();
 };
 const handleCancel = () => {

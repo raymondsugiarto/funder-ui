@@ -74,8 +74,12 @@ const onReset = () => {
 };
 
 const handleSubmit = () => {
-  api
-    .post<DefaultResponse<FunderResponse>>('/api/funders', model.value)
+  const apiMethod =
+    model.value.id == ''
+      ? (url: string, data: FunderDto) => api.post<DefaultResponse<FunderResponse>>(url, data)
+      : (url: string, data: FunderDto) => api.put<DefaultResponse<FunderResponse>>(url, data);
+
+  apiMethod('/api/funders' + (model.value.id ? '/' + model.value.id : ''), model.value)
     .then((response) => {
       $q.notify({
         type: 'positive',

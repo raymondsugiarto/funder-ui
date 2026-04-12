@@ -137,7 +137,7 @@ const columns: QTableColumn[] = [
 ];
 
 const pagination: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
-  sortBy: 'created_at',
+  sortBy: 'updated_at',
   descending: true,
   page: 0,
   rowsPerPage: 20,
