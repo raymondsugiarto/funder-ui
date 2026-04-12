@@ -49,7 +49,7 @@ RUN pnpm build
 ENV NODE_ENV=production
 
 # Remove devDependencies from node_modules for runtime image
-RUN pnpm prune --prod
+RUN pnpm prune --prod --ignore-scripts
 
 USER node
 
