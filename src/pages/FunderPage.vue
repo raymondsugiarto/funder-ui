@@ -2,7 +2,7 @@
   <q-page class="q-pa-md">
     <q-toolbar class="q-pa-none">
       <q-toolbar-title> Funder </q-toolbar-title>
-      <q-btn label="Buat Funder" color="primary" @click="showForm = true"></q-btn>
+      <q-btn label="Buat Funder" color="primary" @click="handleCreate"></q-btn>
     </q-toolbar>
     <q-slide-transition>
       <q-card class="q-mb-md tw-rounded-lg" v-if="showForm">
@@ -27,6 +27,12 @@ import { ref } from 'vue';
 const form = ref<FunderDto>({ ...funderDto });
 const tableRef = ref<typeof FunderTable>();
 const showForm = ref(false);
+
+const handleCreate = () => {
+  form.value = { ...funderDto };
+  showForm.value = true;
+};
+
 const handleSuccess = () => {
   tableRef.value?.refresh();
 };

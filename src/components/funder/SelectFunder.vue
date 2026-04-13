@@ -15,7 +15,7 @@ import TSelect from '@/components/~global/select/TSelect.vue';
 import { useAppStore } from '@/stores/app/app-store';
 import type { FunderResponse } from './types/funder';
 
-const model = defineModel<QSelectValue<FunderResponse>>();
+const model = defineModel<QSelectValue<FunderResponse> | undefined>();
 const { getPrefixApiUrl } = useAppStore();
 
 const mapper = (args: unknown): QSelectValue => {

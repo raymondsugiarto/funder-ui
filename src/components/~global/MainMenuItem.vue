@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue';
-import { MenuItem } from './menu';
+import type { PropType } from 'vue';
+import type { MenuItem } from './menu';
 import { useRoute } from 'vue-router';
 import MainMenuItem from '@global/MainMenuItem.vue';
 import { QExpansionItem } from 'quasar';

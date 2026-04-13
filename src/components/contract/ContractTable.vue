@@ -13,15 +13,8 @@
   >
     <template v-slot:body-cell-id="props">
       <q-td key="id" :props="props" auto-width>
-        <ButtonEditDelete
-          :row="props"
-          :targetEdit="`/contract/${props.row.id}`"
-          @delete="
-            deleteItem = props.row.id;
-            deleteItemId = props.row.id;
-            confirm = true;
-          "
-        />
+        <ButtonEditDelete :row="props.row" @edit="handleEdit" @delete="handleDelete">
+        </ButtonEditDelete>
       </q-td>
     </template>
   </my-table>
@@ -52,9 +45,13 @@ const rows = ref([] as ContractResponse[]);
 const tableRef = ref() as Ref<QTable>;
 const loading = ref(false);
 const confirm = ref(false);
-const deleteItem = ref('');
-const deleteItemId = ref('');
+const selectedItem = ref<ContractResponse>();
 const filter = ref('');
+
+interface Emit {
+  (event: 'edit', row: ContractResponse): void;
+}
+const emit = defineEmits<Emit>();
 
 const columns: QTableColumn[] = [
   {
@@ -62,6 +59,13 @@ const columns: QTableColumn[] = [
     label: '#',
     align: 'left',
     field: 'id',
+    sortable: false,
+  },
+  {
+    name: 'funder',
+    label: 'Funder',
+    align: 'left',
+    field: (row) => row.funder?.name ?? '',
     sortable: false,
   },
   {
@@ -143,6 +147,16 @@ const pagination: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
   rowsPerPage: 20,
   rowsNumber: 0,
 });
+
+const handleEdit = (row: ContractResponse) => {
+  selectedItem.value = row;
+  emit('edit', row);
+};
+
+const handleDelete = (row: ContractResponse) => {
+  selectedItem.value = row;
+  confirm.value = true;
+};
 
 const onRequest: QTableProps['onRequest'] = (tableProps) => {
   loading.value = true;

@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import MainMenuItem from '@global/MainMenuItem.vue';
-import { MenuItem } from './menu';
+import type { MenuItem } from './menu';
 import { computed } from 'vue';
 import { useUserStore } from '@/stores/user/user-store';
 
@@ -31,7 +31,7 @@ const menus: MenuItem[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',
-    icon: 'inventory',
+    icon: 'grid_view',
     to: '/dashboard',
   },
   {
@@ -43,31 +43,31 @@ const menus: MenuItem[] = [
   {
     id: 'contract',
     label: 'Perjanjian Kontrak',
-    icon: 'paid',
+    icon: 'handshake',
     to: '/contract',
   },
   {
     id: 'payment',
     label: 'Pembayaran',
-    icon: 'receipt',
+    icon: 'attach_money',
     to: '/payment',
   },
   {
     id: 'contract-aging',
     label: 'Laporan Jatuh Tempo',
-    icon: 'shopping_bag',
+    icon: 'assignment_late',
     to: '/contract-aging',
   },
   {
     id: 'payment-paid',
     label: 'Laporan Pembayaran Funder',
-    icon: 'shelves',
+    icon: 'price_check',
     to: '/payment-paid',
   },
   {
     id: 'history-funder',
     label: 'Riwayat Funder',
-    icon: 'shelves',
+    icon: 'history',
     to: '/history-funder',
   },
 ];

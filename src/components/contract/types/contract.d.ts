@@ -1,4 +1,7 @@
+import type { FunderDto, FunderResponse } from 'src/components/funder/types/funder';
+
 export interface ContractFormDto {
+  id?: string;
   contractCode: string;
   funderId: string;
   disbursementAt: Date;
@@ -9,6 +12,7 @@ export interface ContractFormDto {
   returnPercentage: number | null;
   attachFile: File | null;
   notes: string;
+  funder?: FunderDto;
 }
 export interface ContractResponse {
   id: string;
@@ -24,4 +28,5 @@ export interface ContractResponse {
   returnAmount: number;
   attachFile: string;
   notes: string;
+  funder: FunderResponse;
 }

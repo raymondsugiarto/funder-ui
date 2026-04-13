@@ -10,10 +10,10 @@
           :rules="[(val) => !!val || 'Nominal wajib diisi']"
         />
         <SelectFunder
-          v-model="funderId"
+          v-model="funder"
           @update:model-value="(row) => (model.funderId = row?.value ?? '')"
           lazy-rules
-          :rules="[(val: QSelectValue<FunderDto>) => !!val || 'Funder wajib dipilih']"
+          :rules="[(val: QSelectValue<FunderResponse>) => !!val || 'Funder wajib dipilih']"
         ></SelectFunder>
 
         <div class="row q-col-gutter-md">
@@ -84,7 +84,7 @@
           label="Lampiran"
           outlined
           clearable
-          :rules="[(val) => !!val || 'Lampiran wajib dilampirkan']"
+          :rules="[model.id ? () => true : (val) => !!val || 'Lampiran wajib dilampirkan']"
         >
           <template #prepend>
             <q-icon name="attach_file" />
@@ -101,10 +101,10 @@
 import DatePicker from '@global/DatePicker.vue';
 import type { ContractFormDto, ContractResponse } from './types/contract';
 import SelectFunder from '../funder/SelectFunder.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import type { QSelectValue } from 'src/types/components/tselect';
-import type { FunderDto } from '../funder/types/funder';
+import type { FunderResponse } from '../funder/types/funder';
 import type { DefaultResponse } from 'src/types/response';
 import { api } from 'src/boot/axios';
 
@@ -112,13 +112,34 @@ const model = defineModel<ContractFormDto>({
   required: true,
 });
 
-const funderId = ref();
+const funder = ref<QSelectValue<FunderResponse>>();
 const $q = useQuasar();
-const emit = defineEmits({
-  success: (data: ContractResponse) => true,
-  error: (error: Error) => true,
-  cancel: () => true,
-});
+
+interface Emit {
+  (event: 'success', data: ContractResponse): void;
+  (event: 'error', error: Error): void;
+  (event: 'cancel'): void;
+}
+
+const emit = defineEmits<Emit>();
+
+// when model.funderId is updated from select funder, update the funder ref to show the selected funder in select component
+watch(
+  () => model.value.funderId,
+  (newFunderId: string) => {
+    console.log('Watch triggered - funderId:', newFunderId, 'funder:', model.value.funder);
+    if (!newFunderId || !model.value.funder) {
+      funder.value = undefined;
+      return;
+    }
+    funder.value = {
+      value: newFunderId,
+      label: model.value.funder?.name ?? '',
+      object: model.value.funder,
+    };
+  },
+  { immediate: true },
+);
 
 const handleSubmit = () => {
   const f = new FormData();
@@ -130,15 +151,24 @@ const handleSubmit = () => {
   f.append('duration', model.value.duration?.toString() ?? '');
   f.append('returnPercentage', model.value.returnPercentage?.toString() ?? '');
   f.append('notes', model.value.notes);
+  f.append('destinationAccount', model.value.destinationAccount);
   if (model.value.attachFile) {
     f.append('attachmentFile', model.value.attachFile);
   }
-  api
-    .post<DefaultResponse<ContractResponse>>('/api/contracts', f, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+
+  const header = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  const apiMethod =
+    model.value.id == ''
+      ? (url: string, data: FormData) =>
+          api.post<DefaultResponse<ContractResponse>>(url, data, header)
+      : (url: string, data: FormData) =>
+          api.put<DefaultResponse<ContractResponse>>(url, data, header);
+
+  apiMethod('/api/contracts' + (model.value.id ? '/' + model.value.id : ''), f)
     .then((response) => {
       $q.notify({
         type: 'positive',

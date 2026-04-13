@@ -20,8 +20,9 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { QPopupProxy, ValidationRule } from 'quasar';
-import { RangeDateDto, QSingularRangeDate } from '@/types/range-date';
+import type { ValidationRule } from 'quasar';
+import { QPopupProxy } from 'quasar';
+import type { RangeDateDto, QSingularRangeDate } from '@/types/range-date';
 import { date } from 'quasar';
 import { useDate } from '@/composables/date';
 
