@@ -6,9 +6,9 @@
     row-key="id"
     v-model:pagination="pagination"
     :loading="loading"
-    separator="cell"
+    module-name="Funder"
     class="sticky-table"
-    :filter="filter"
+    v-model:filter="filter"
     @request="onRequest"
   >
     <template v-slot:body-cell-id="props">

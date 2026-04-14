@@ -1,7 +1,20 @@
 <template>
-  <q-table ref="qTableRef" v-bind="passThroughProps">
+  <q-table ref="qTableRef" v-bind="passThroughProps" dense bordered :filter="modelFilter">
     <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="slotProps">
       <slot :name="slotName" v-bind="slotProps" />
+    </template>
+    <template v-slot:top-right>
+      <q-input
+        debounce="300"
+        v-model="modelFilter"
+        :placeholder="`Cari ${props.moduleName ?? '...'}`"
+        dense
+        clearable
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </template>
   </q-table>
 </template>
@@ -13,14 +26,15 @@ import { ref } from 'vue';
 import type { QTable, QTableProps } from 'quasar';
 
 defineOptions({
-  name: 'BaseTable',
+  name: 'MyTable',
   inheritAttrs: false,
 });
 
-const filter = ref('');
+const modelFilter = defineModel<string>('filter');
 
 interface TableProps extends QTableProps {
   stickyHeaderOffset?: number;
+  moduleName?: string;
 }
 
 const props = defineProps<TableProps>();

@@ -1,9 +1,11 @@
+import type { RangeDateDto } from 'src/types/range-date';
+
 export interface PaymentPaidFilter {
   funderId: string;
-  disbursementAt: Date;
+  paymentAtRange: RangeDateDto;
 }
 
-export interface ContractAgingResponse {
+export interface PaymentPaidResponse {
   id: string;
   contractNumber: string;
   contractCode: string;

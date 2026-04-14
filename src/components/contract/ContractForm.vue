@@ -84,7 +84,11 @@
           label="Lampiran"
           outlined
           clearable
-          :rules="[model.id ? () => true : (val) => !!val || 'Lampiran wajib dilampirkan']"
+          :rules="[
+            model.id && model.id !== ''
+              ? () => true
+              : (val) => !!val || 'Lampiran wajib dilampirkan',
+          ]"
         >
           <template #prepend>
             <q-icon name="attach_file" />
@@ -107,6 +111,7 @@ import type { QSelectValue } from 'src/types/components/tselect';
 import type { FunderResponse } from '../funder/types/funder';
 import type { DefaultResponse } from 'src/types/response';
 import { api } from 'src/boot/axios';
+import { contractFormDto } from './contract';
 
 const model = defineModel<ContractFormDto>({
   required: true,
@@ -141,6 +146,11 @@ watch(
   { immediate: true },
 );
 
+const onReset = () => {
+  model.value = { ...contractFormDto };
+  funder.value = undefined;
+};
+
 const handleSubmit = () => {
   const f = new FormData();
   f.append('contractCode', model.value.contractCode);
@@ -161,20 +171,25 @@ const handleSubmit = () => {
       'Content-Type': 'multipart/form-data',
     },
   };
-  const apiMethod =
-    model.value.id == ''
-      ? (url: string, data: FormData) =>
-          api.post<DefaultResponse<ContractResponse>>(url, data, header)
-      : (url: string, data: FormData) =>
-          api.put<DefaultResponse<ContractResponse>>(url, data, header);
 
-  apiMethod('/api/contracts' + (model.value.id ? '/' + model.value.id : ''), f)
+  const apiMethod =
+    model.value.id && model.value.id !== ''
+      ? (url: string, data: FormData) =>
+          api.put<DefaultResponse<ContractResponse>>(url, data, header)
+      : (url: string, data: FormData) =>
+          api.post<DefaultResponse<ContractResponse>>(url, data, header);
+
+  apiMethod(
+    '/api/contracts' + (model.value.id && model.value.id !== '' ? '/' + model.value.id : ''),
+    f,
+  )
     .then((response) => {
       $q.notify({
         type: 'positive',
         message: 'Kontrak berhasil disimpan',
       });
       emit('success', response.data);
+      onReset();
     })
     .catch((error) => {
       console.error('Gagal menyimpan kontrak:', error);

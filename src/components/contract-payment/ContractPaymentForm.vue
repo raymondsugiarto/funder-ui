@@ -114,15 +114,16 @@
 <script lang="ts" setup>
 import DatePicker from '@global/DatePicker.vue';
 import SelectFunder from '../funder/SelectFunder.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useQuasar } from 'quasar';
-import { QSelectValue } from 'src/types/components/tselect';
-import { FunderDto, FunderResponse } from '../funder/types/funder';
-import { DefaultResponse } from 'src/types/response';
+import type { QSelectValue } from 'src/types/components/tselect';
+import type { FunderDto, FunderResponse } from '../funder/types/funder';
+import type { DefaultResponse } from 'src/types/response';
 import { api } from 'src/boot/axios';
-import { ContractPaymentDto, ContractPaymentResponse } from './types/contract-payment';
+import type { ContractPaymentDto, ContractPaymentResponse } from './types/contract-payment';
 import SelectContract from '../contract/SelectContract.vue';
-import { ContractResponse } from '../contract/types/contract';
+import type { ContractResponse } from '../contract/types/contract';
+import { contractPaymentDto } from './contract-payment';
 
 const model = defineModel<ContractPaymentDto>({
   required: true,
@@ -131,14 +132,46 @@ const model = defineModel<ContractPaymentDto>({
 const funder = ref();
 const contract = ref();
 const $q = useQuasar();
-const emit = defineEmits({
-  success: (data: ContractPaymentResponse) => true,
-  error: (error: Error) => true,
-  cancel: () => true,
-});
+interface Emit {
+  (event: 'success', data: ContractPaymentResponse): void;
+  (event: 'error', error: Error): void;
+  (event: 'cancel'): void;
+}
+const emit = defineEmits<Emit>();
+
+// when model.funderId is updated from select funder, update the funder ref to show the selected funder in select component
+watch(
+  () => model.value.funderId,
+  (newFunderId: string) => {
+    if (!newFunderId || !model.value.funder) {
+      funder.value = undefined;
+      return;
+    }
+    funder.value = {
+      value: newFunderId,
+      label: model.value.funder?.name ?? '',
+      object: model.value.funder,
+    };
+    contract.value = {
+      value: model.value.contractId,
+      label:
+        (model.value.contract?.contractCode ?? '') +
+        ' - ' +
+        (model.value.contract?.contractNumber ?? ''),
+      object: model.value.contract,
+    };
+  },
+  { immediate: true },
+);
 
 const handleUpdateFunder = (row: QSelectValue<FunderResponse> | undefined) => {
   model.value.funderId = row?.value ?? '';
+  contract.value = null;
+};
+
+const onReset = () => {
+  model.value = { ...contractPaymentDto };
+  funder.value = null;
   contract.value = null;
 };
 
@@ -151,25 +184,28 @@ const handleSubmit = () => {
   if (model.value.attachFile) {
     f.append('attachmentFile', model.value.attachFile);
   }
-  api
-    .post<DefaultResponse<ContractPaymentResponse>>(
-      `/api/contracts/${model.value.contractId}/payments`,
-      f,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    )
+
+  const apiMethod =
+    model.value.id && model.value.id !== ''
+      ? (url: string, data: FormData) =>
+          api.put<DefaultResponse<ContractPaymentResponse>>(url, data)
+      : (url: string, data: FormData) =>
+          api.post<DefaultResponse<ContractPaymentResponse>>(url, data);
+
+  apiMethod(
+    `/api/contracts/${model.value.contractId}/payments` +
+      (model.value.id && model.value.id !== '' ? '/' + model.value.id : ''),
+    f,
+  )
     .then((response) => {
       $q.notify({
         type: 'positive',
         message: 'Pembayaran berhasil disimpan',
       });
       emit('success', response.data);
+      onReset();
     })
     .catch((error) => {
-      console.error('Gagal menyimpan Pembayaran:', error);
       $q.notify({
         type: 'negative',
         message: 'Gagal menyimpan Pembayaran',

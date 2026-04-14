@@ -1,4 +1,4 @@
-import { DateUnitOptions } from 'quasar';
+import type { DateUnitOptions } from 'quasar';
 
 export interface RangeDateDto {
   from: Date;

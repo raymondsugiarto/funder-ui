@@ -22,10 +22,10 @@
 
 <script lang="ts" setup>
 import ContractAgingReport from 'src/components/contract/ContractAgingReport.vue';
-import { ContractAgingFilter } from 'src/components/contract/types/contract-aging';
+import type { ContractAgingFilter } from 'src/components/contract/types/contract-aging';
 import SelectFunder from 'src/components/funder/SelectFunder.vue';
-import { FunderDto } from 'src/components/funder/types/funder';
-import { QSelectValue } from 'src/types/components/tselect';
+import type { FunderDto } from 'src/components/funder/types/funder';
+import type { QSelectValue } from 'src/types/components/tselect';
 import { ref } from 'vue';
 
 const tableRef = ref<typeof ContractAgingReport>();

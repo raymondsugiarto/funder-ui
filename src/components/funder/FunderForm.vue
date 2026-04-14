@@ -29,7 +29,9 @@
           v-model="model.password"
           type="password"
           lazy-rules
-          :rules="[(val) => !!val || 'Kata Sandi wajib diisi']"
+          :rules="[
+            model.id && model.id !== '' ? () => true : (val) => !!val || 'Kata Sandi wajib diisi',
+          ]"
         ></q-input>
       </div>
     </div>
@@ -75,11 +77,14 @@ const onReset = () => {
 
 const handleSubmit = () => {
   const apiMethod =
-    model.value.id == ''
-      ? (url: string, data: FunderDto) => api.post<DefaultResponse<FunderResponse>>(url, data)
-      : (url: string, data: FunderDto) => api.put<DefaultResponse<FunderResponse>>(url, data);
+    model.value.id && model.value.id !== ''
+      ? (url: string, data: FunderDto) => api.put<DefaultResponse<FunderResponse>>(url, data)
+      : (url: string, data: FunderDto) => api.post<DefaultResponse<FunderResponse>>(url, data);
 
-  apiMethod('/api/funders' + (model.value.id ? '/' + model.value.id : ''), model.value)
+  apiMethod(
+    '/api/funders' + (model.value.id && model.value.id !== '' ? '/' + model.value.id : ''),
+    model.value,
+  )
     .then((response) => {
       $q.notify({
         type: 'positive',

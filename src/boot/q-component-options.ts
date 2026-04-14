@@ -4,9 +4,8 @@ import type {
   QFileProps,
   QInputProps,
   QSelectProps,
-  QTableProps,
 } from 'quasar';
-import { QCard, QFile, QInput, QSelect, QTable } from 'quasar';
+import { QCard, QFile, QInput, QSelect } from 'quasar';
 import { boot } from 'quasar/wrappers';
 
 export default boot(() => {
@@ -24,10 +23,6 @@ export default boot(() => {
   SetComponentDefaults<QSelectProps>(QSelect, {
     outlined: true,
     dense: true,
-  });
-  SetComponentDefaults<QTableProps>(QTable, {
-    bordered: true,
-    flat: true,
   });
 });
 

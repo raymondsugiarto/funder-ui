@@ -6,9 +6,9 @@
     row-key="id"
     v-model:pagination="pagination"
     :loading="loading"
-    separator="cell"
     class="sticky-table"
-    :filter="filter"
+    module-name="Kontrak"
+    v-model:filter="filter"
     @request="onRequest"
   >
     <template v-slot:body-cell-id="props">
@@ -18,6 +18,14 @@
       </q-td>
     </template>
   </my-table>
+  <DeleteConfirmationDialog
+    v-model="confirm"
+    :deleteItem="selectedItem?.contractCode ?? ''"
+    :api-url="`/api/contracts/${selectedItem?.id}`"
+    success-message="Kontrak berhasil dihapus"
+    error-message="Gagal menghapus Kontrak"
+    @deleteSuccess="tableRef.requestServerInteraction()"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -37,6 +45,7 @@ import type {
 } from 'src/types/pagination/pagination';
 import type { DefaultResponse } from 'src/types/response';
 import { useDate } from 'src/composables/date';
+import DeleteConfirmationDialog from '../~global/dialog/DeleteConfirmationDialog.vue';
 
 const $q = useQuasar();
 const { DISPLAY_DATE_FORMAT } = useDate();

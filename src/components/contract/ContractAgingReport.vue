@@ -8,25 +8,27 @@
     :loading="loading"
     separator="cell"
     class="sticky-table"
-    :filter="filter"
+    v-model:filter="filterSearch"
     @request="onRequest"
   >
   </my-table>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, Ref } from 'vue';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 import MyTable from '@global/MyTable.vue';
-import { date, QTable, QTableColumn, QTableProps, useQuasar } from 'quasar';
+import type { QTable, QTableColumn, QTableProps } from 'quasar';
+import { date, useQuasar } from 'quasar';
 import { usePagination } from 'src/composables/pagination/pagination';
 import { api } from 'src/boot/axios';
-import {
+import type {
   PageTableDto,
   QTablePropsOnRequest,
   QTablePropsOnRequestPagination,
 } from 'src/types/pagination/pagination';
-import { DefaultResponse } from 'src/types/response';
-import { ContractAgingFilter, ContractAgingResponse } from './types/contract-aging';
+import type { DefaultResponse } from 'src/types/response';
+import type { ContractAgingFilter, ContractAgingResponse } from './types/contract-aging';
 import { useDate } from 'src/composables/date';
 
 interface Props {
@@ -40,7 +42,7 @@ const rows = ref([] as ContractAgingResponse[]);
 const { DISPLAY_DATE_FORMAT } = useDate();
 const tableRef = ref() as Ref<QTable>;
 const loading = ref(false);
-const filter = ref('');
+const filterSearch = ref('');
 
 const columns: QTableColumn[] = [
   {
@@ -108,25 +110,26 @@ const pagination: Ref<NonNullable<QTablePropsOnRequestPagination>> = ref({
   rowsNumber: 0,
 });
 
-const onRequest: QTableProps['onRequest'] = async (tableProps) => {
+const onRequest: QTableProps['onRequest'] = (tableProps) => {
   loading.value = true;
 
   const searchParams = new URLSearchParams();
   searchParams.append('view', 'aging');
   const tablePropsRequest: QTablePropsOnRequest = tableProps;
-  if (filter.value) {
-    searchParams.append('query', filter.value);
+  if (filterSearch.value) {
+    searchParams.append('query', filterSearch.value);
   }
   // loop props.filter and append to searchParams
   for (const key in props.filter) {
     const value = props.filter[key as keyof ContractAgingFilter];
-    if (value) {
+    if (typeof value === 'string' && value.trim() !== '') {
       searchParams.append(key, value);
     }
   }
+
   tablePropsRequest.params = searchParams;
 
-  await paginationRequest<ContractAgingResponse>('/api/contracts', tablePropsRequest, pagination)
+  paginationRequest<ContractAgingResponse>('/api/contracts', tablePropsRequest, pagination)
     .then((response: DefaultResponse<PageTableDto<ContractAgingResponse>>) => {
       rows.value = response.data.contents;
     })

@@ -23,7 +23,11 @@
           <td class="tw-border tw-border-collapse q-pa-md"></td>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
         </tr>
-        <tr class="tw-border tw-border-collapse" v-for="(payment, idx) in row.contractPayments">
+        <tr
+          class="tw-border tw-border-collapse"
+          :key="idx"
+          v-for="(payment, idx) in row.contractPayments"
+        >
           <HistoryFunderContractInfo v-if="idx === 0" :row="row"></HistoryFunderContractInfo>
           <td class="tw-border tw-border-collapse q-pa-md">{{ payment.notes }}</td>
           <td class="tw-border tw-border-collapse q-pa-md text-right">
@@ -44,7 +48,6 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 import { ref } from 'vue';
-import type { QTable } from 'quasar';
 import { date, useQuasar } from 'quasar';
 import { usePagination } from 'src/composables/pagination/pagination';
 import { api } from 'src/boot/axios';
