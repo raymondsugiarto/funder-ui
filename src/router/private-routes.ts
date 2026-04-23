@@ -14,6 +14,12 @@ const privateRoutes: RouteRecordRaw[] = [
         meta: { ...adminPrivateMeta },
       },
       {
+        name: 'change-password',
+        path: 'change-password',
+        component: () => import('@/pages/ChangePasswordPage.vue'),
+        meta: { ...adminPrivateMeta },
+      },
+      {
         name: 'funder',
         path: 'funder',
         component: () => import('@/pages/FunderPage.vue'),
