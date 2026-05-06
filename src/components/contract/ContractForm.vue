@@ -84,6 +84,9 @@
           label="Lampiran"
           outlined
           clearable
+          hint="File maksimal adalah 4MB"
+          :max-file-size="4 * 1024"
+          @rejected="handleRejected"
           :rules="[
             model.id && model.id !== ''
               ? () => true
@@ -106,6 +109,7 @@ import DatePicker from '@global/DatePicker.vue';
 import type { ContractFormDto, ContractResponse } from './types/contract';
 import SelectFunder from '../funder/SelectFunder.vue';
 import { ref, watch } from 'vue';
+import type { QRejectedEntry } from 'quasar';
 import { useQuasar } from 'quasar';
 import type { QSelectValue } from 'src/types/components/tselect';
 import type { FunderResponse } from '../funder/types/funder';
@@ -145,6 +149,22 @@ watch(
   },
   { immediate: true },
 );
+
+const handleRejected = (rejectedEntries: QRejectedEntry[]) => {
+  rejectedEntries.forEach((entry) => {
+    if (entry.failedPropValidation === 'max-file-size') {
+      $q.notify({
+        type: 'negative',
+        message: `File ${entry.file.name} terlalu besar. Ukuran maksimal adalah 4MB.`,
+      });
+    } else {
+      $q.notify({
+        type: 'negative',
+        message: `File ${entry.file.name} gagal diunggah. Error: ${entry.failedPropValidation}`,
+      });
+    }
+  });
+};
 
 const onReset = () => {
   model.value = { ...contractFormDto };

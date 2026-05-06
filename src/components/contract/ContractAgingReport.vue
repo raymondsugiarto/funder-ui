@@ -30,6 +30,7 @@ import type {
 import type { DefaultResponse } from 'src/types/response';
 import type { ContractAgingFilter, ContractAgingResponse } from './types/contract-aging';
 import { useDate } from 'src/composables/date';
+import { useNumber } from 'src/composables/number';
 
 interface Props {
   filter: ContractAgingFilter;
@@ -37,6 +38,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const $q = useQuasar();
+const { formatCurrency } = useNumber();
 const { paginationRequest } = usePagination(api);
 const rows = ref([] as ContractAgingResponse[]);
 const { DISPLAY_DATE_FORMAT } = useDate();
@@ -70,7 +72,7 @@ const columns: QTableColumn[] = [
     name: 'amount',
     label: 'Nominal',
     align: 'right',
-    field: 'amount',
+    field: (row) => formatCurrency(row.amount),
     sortable: false,
   },
   {

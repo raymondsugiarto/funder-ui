@@ -46,9 +46,11 @@ import type {
 import type { DefaultResponse } from 'src/types/response';
 import { useDate } from 'src/composables/date';
 import DeleteConfirmationDialog from '../~global/dialog/DeleteConfirmationDialog.vue';
+import { useNumber } from 'src/composables/number';
 
 const $q = useQuasar();
 const { DISPLAY_DATE_FORMAT } = useDate();
+const { formatCurrency } = useNumber();
 const { paginationRequest } = usePagination(api);
 const rows = ref([] as ContractResponse[]);
 const tableRef = ref() as Ref<QTable>;
@@ -102,7 +104,7 @@ const columns: QTableColumn[] = [
     name: 'amount',
     label: 'Nominal',
     align: 'right',
-    field: 'amount',
+    field: (row) => formatCurrency(row.amount),
     sortable: false,
   },
   {

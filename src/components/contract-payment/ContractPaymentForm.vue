@@ -143,6 +143,10 @@ const emit = defineEmits<Emit>();
 watch(
   () => model.value.funderId,
   (newFunderId: string) => {
+    if (!model.value.id) {
+      return;
+    }
+    console.log('model.funderId updated:', model.value.id);
     if (!newFunderId || !model.value.funder) {
       funder.value = undefined;
       return;

@@ -46,6 +46,7 @@ import type { DefaultResponse } from 'src/types/response';
 import { useDate } from 'src/composables/date';
 import type { ContractPaymentResponse } from './types/contract-payment';
 import DeleteConfirmationDialog from '../~global/dialog/DeleteConfirmationDialog.vue';
+import { useNumber } from 'src/composables/number';
 
 const $q = useQuasar();
 const { DISPLAY_DATE_FORMAT } = useDate();
@@ -61,6 +62,7 @@ interface Emit {
   (event: 'edit', row: ContractPaymentResponse): void;
 }
 const emit = defineEmits<Emit>();
+const { formatCurrency } = useNumber();
 
 const columns: QTableColumn[] = [
   {
@@ -95,7 +97,7 @@ const columns: QTableColumn[] = [
     name: 'paymentAmount',
     label: 'Nominal Pembayaran',
     align: 'right',
-    field: 'paymentAmount',
+    field: (row) => formatCurrency(row.paymentAmount),
     sortable: false,
   },
   // {

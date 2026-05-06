@@ -18,7 +18,7 @@
           <HistoryFunderContractInfo :row="row"></HistoryFunderContractInfo>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
           <td class="tw-border tw-border-collapse q-pa-md text-right">
-            Rp {{ row.amount + row.returnAmount }}
+            Rp {{ formatCurrency(row.amount + row.returnAmount) }}
           </td>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
           <td class="tw-border tw-border-collapse q-pa-md"></td>
@@ -31,7 +31,7 @@
           <HistoryFunderContractInfo v-if="idx === 0" :row="row"></HistoryFunderContractInfo>
           <td class="tw-border tw-border-collapse q-pa-md">{{ payment.notes }}</td>
           <td class="tw-border tw-border-collapse q-pa-md text-right">
-            Rp {{ payment.paymentAmount }}
+            Rp {{ formatCurrency(payment.paymentAmount) }}
           </td>
           <td class="tw-border tw-border-collapse q-pa-md">
             {{ date.formatDate(row.dueDate, DISPLAY_DATE_FORMAT) }}
@@ -60,6 +60,7 @@ import type { DefaultResponse } from 'src/types/response';
 import type { HistoryFunderFilter, HistoryFunderResponse } from './types/history-funder';
 import { useDate } from 'src/composables/date';
 import HistoryFunderContractInfo from './HistoryFunderContractInfo.vue';
+import { useNumber } from 'src/composables/number';
 
 interface Props {
   filter: HistoryFunderFilter;
@@ -67,6 +68,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const $q = useQuasar();
+const { formatCurrency } = useNumber();
 const { paginationRequest } = usePagination(api);
 const rows = ref([] as HistoryFunderResponse[]);
 const { DISPLAY_DATE_FORMAT } = useDate();
