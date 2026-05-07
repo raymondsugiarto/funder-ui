@@ -85,7 +85,7 @@
           outlined
           clearable
           hint="File maksimal adalah 4MB"
-          :max-file-size="4 * 1024"
+          :max-file-size="4 * 1024 * 1024"
           @rejected="handleRejected"
           :rules="[
             model.id && model.id !== ''
