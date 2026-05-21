@@ -50,12 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-import {
-  QSelectScrollOption,
-  QSelectValue,
-  TSelectProps,
-} from '@/types/components/tselect';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
+import type { QSelectScrollOption, QSelectValue, TSelectProps } from '@/types/components/tselect';
 import { useSelect } from '@/composables/tselect';
 import { QSelect } from 'quasar';
 
@@ -75,8 +71,7 @@ const props = withDefaults(defineProps<TSelectProps>(), {
 
 const select = ref<QSelect | null>(null);
 const model = ref();
-const { onSelectScroll, onFilterFn, resetOptions, loading, options } =
-  useSelect(props.api);
+const { onSelectScroll, onFilterFn, resetOptions, loading, options } = useSelect(props.api);
 const emit = defineEmits(['update:modelValue']);
 
 const urlParams = computed(() => {
@@ -96,7 +91,7 @@ const scrollOption = computed<QSelectScrollOption>({
       params: urlParams.value,
       mapper: (item: unknown) => {
         if (props.mapper) {
-          return props.mapper(item as Record<string, unknown>) as QSelectValue;
+          return props.mapper(item as Record<string, unknown>);
         }
 
         const record = item as Record<string, unknown>;
@@ -121,21 +116,25 @@ const validate = () => {
   return select.value?.validate();
 };
 
-const onScroll = async ({ index, to }: { index: number; to: number }) => {
-  onSelectScroll({ index, to }, scrollOption.value);
+const onScroll = ({ index, to }: { index: number; to: number }) => {
+  void onSelectScroll({ index, to }, scrollOption.value);
 };
 
 const handleFilter = (
   val: string,
   doneFn: (callbackFn: () => void, afterFn?: (ref: QSelect) => void) => void,
-  abortFn: () => void
+  abortFn: () => void,
 ) => {
-  onFilterFn({ val, doneFn, abortFn }, scrollOption.value);
+  void onFilterFn({ val, doneFn, abortFn }, scrollOption.value);
 };
 
 const handleSelected = (value: QSelectValue) => {
   emit('update:modelValue', value);
 };
+
+watchEffect(() => {
+  console.log('modelValue raw:', props.modelValue);
+});
 
 watch(
   () => props.modelValue,
@@ -144,7 +143,7 @@ watch(
       resetOptions();
     }
     model.value = newValue;
-  }
+  },
 );
 
 onMounted(() => {

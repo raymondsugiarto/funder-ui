@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-pa-md">
     <q-toolbar class="q-pa-none">
-      <q-toolbar-title> Perjanjian Kontrak </q-toolbar-title>
-      <q-btn label="Buat Perjanjian Kontrak" color="primary" @click="showForm = true"></q-btn>
+      <q-toolbar-title> Pembayaran </q-toolbar-title>
+      <q-btn label="Buat Pembayaran" color="primary" @click="showForm = true"></q-btn>
     </q-toolbar>
     <q-slide-transition>
       <q-card class="q-mb-md tw-rounded-lg" v-if="showForm">

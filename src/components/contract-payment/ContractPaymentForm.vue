@@ -56,7 +56,7 @@
               <div class="col-6">
                 <p>
                   <span class="text-weight-bold">Nominal:</span>
-                  Rp {{ contract.object.amount }}
+                  Rp {{ formatCurrency(contract.object.amount) }}
                 </p>
                 <p>
                   <span class="text-weight-bold">Tenor:</span>
@@ -68,7 +68,7 @@
                 </p>
                 <p>
                   <span class="text-weight-bold">Return Amount</span>
-                  {{ contract.object.returnAmount }}%
+                  {{ formatCurrency(contract.object.returnAmount) }}
                 </p>
               </div>
             </div>
@@ -124,11 +124,12 @@ import type { ContractPaymentDto, ContractPaymentResponse } from './types/contra
 import SelectContract from '../contract/SelectContract.vue';
 import type { ContractResponse } from '../contract/types/contract';
 import { contractPaymentDto } from './contract-payment';
+import { useNumber } from 'src/composables/number';
 
 const model = defineModel<ContractPaymentDto>({
   required: true,
 });
-
+const { formatCurrency } = useNumber();
 const funder = ref();
 const contract = ref();
 const $q = useQuasar();

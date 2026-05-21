@@ -121,7 +121,7 @@ const model = defineModel<ContractFormDto>({
   required: true,
 });
 
-const funder = ref<QSelectValue<FunderResponse>>();
+const funder = ref<QSelectValue<FunderResponse> | undefined>();
 const $q = useQuasar();
 
 interface Emit {
@@ -136,16 +136,16 @@ const emit = defineEmits<Emit>();
 watch(
   () => model.value.funderId,
   (newFunderId: string) => {
-    console.log('Watch triggered - funderId:', newFunderId, 'funder:', model.value.funder);
-    if (!newFunderId || !model.value.funder) {
-      funder.value = undefined;
-      return;
+    if (model.value.id !== undefined && model.value.id !== '') {
+      if (model.value.funder) {
+        funder.value = {
+          value: newFunderId,
+          label: model.value.funder.name,
+          object: model.value.funder,
+        };
+        delete model.value.funder;
+      }
     }
-    funder.value = {
-      value: newFunderId,
-      label: model.value.funder?.name ?? '',
-      object: model.value.funder,
-    };
   },
   { immediate: true },
 );
