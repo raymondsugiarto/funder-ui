@@ -215,7 +215,7 @@ const handleSubmit = () => {
       console.error('Gagal menyimpan kontrak:', error);
       $q.notify({
         type: 'negative',
-        message: 'Gagal menyimpan kontrak',
+        message: 'Gagal menyimpan kontrak. ' + (error.response?.data?.message || error.message),
       });
       emit('error', error);
     });
